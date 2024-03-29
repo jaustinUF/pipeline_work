@@ -1,3 +1,13 @@
+# Pipeline thats run by Airflow, using AWS services
+#   .csv file from reddit
+#       from API call made by AWS Lambda, invoked in 'reddit_api_read'
+#       to S3 bucket
+#   .csv file from S3 bucket
+#       picked up (by Glue) in 'transform_to_parquet'
+#       transformed into parquet file
+#       to S3 bucket
+#   secuity provided by Airflow connection configuration.
+
 from datetime import datetime
 from airflow.models import DAG
 from airflow.providers.amazon.aws.operators.lambda_function import LambdaInvokeFunctionOperator
@@ -16,11 +26,10 @@ with DAG(
         function_name = 'reddit_api_call',
         invocation_type = 'RequestResponse',
         aws_conn_id = "s3_conn"
-    ) # https://airflow.apache.org/docs/apache-airflow-providers-amazon/stable/operators/lambda.html#howto-operator-lambdainvokefunctionoperator
-    # https://airflow.apache.org/docs/apache-airflow-providers-amazon/stable/_api/airflow/providers/amazon/aws/operators/lambda_function/index.html#airflow.providers.amazon.aws.operators.lambda_function.LambdaInvokeFunctionOperator
+    ) 
 
     # data transform via Glue
-    # get .csv file, (perhaps) clean data/add date column, to .parquet file
+    # get .csv file, clean data/add date column, to .parquet file
     transform_to_parquet = GlueJobOperator(
         task_id = 'to_parquet',     
         job_name = 'Reddit_data_to_df_show',

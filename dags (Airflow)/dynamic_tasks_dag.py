@@ -33,8 +33,8 @@ def retrieve_upload_file(bucket, key):
     s3 = boto3.resource(                    # configure s3 resource
         service_name='s3',
         region_name='us-east-1',
-        aws_access_key_id='AKIAZ2NPLMMGFEGGYNOS',
-        aws_secret_access_key='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'
+        aws_access_key_id='(AWS key)',
+        aws_secret_access_key='(AWS secret jey)'
     )
     # upload local file to s3 bucket
     s3.Bucket(bucket).upload_file(Filename=data_file, Key=key)
