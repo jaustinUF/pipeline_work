@@ -5,3 +5,4 @@ This repository describes simple demo ELT pipeline projects. All of them:
   - require AWS keys to operate.
   - those with API calls probably require a current API key.
   
+<center><img src="assets/etl.png" alt="etl" width="75%" /></center>
