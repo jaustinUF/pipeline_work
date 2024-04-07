@@ -1,0 +1,30 @@
+import sys
+from awsglue.transforms import *
+from awsglue.utils import getResolvedOptions
+from pyspark.context import SparkContext
+from awsglue.context import GlueContext
+from awsglue.job import Job
+
+## @params: [JOB_NAME]
+args = getResolvedOptions(sys.argv,
+       ['JOB_NAME', 'year_value', 'month_value',
+        'day_value', 'hour_value', 'bucket', 'key'])
+
+sc = SparkContext()
+glueContext = GlueContext(sc)
+spark = glueContext.spark_session
+job = Job(glueContext)
+job.init(args['JOB_NAME'], args)
+
+# should get .csv file path through 'args'(instead of hardcodeed)
+# df = spark.read.csv("s3://source-elt-service-csv/purchasing_data.csv")
+# build s3 object name
+df = spark.read.csv("s3://" + args["bucket"] + "/" + args["key"])
+
+# df work 
+print(args["year_value"], args["month_value"], args["day_value"],
+            args["hour_value"], args["bucket"], args["key"])
+
+df.write.mode("append").parquet("s3://processed-elt-service/purchasing_data.parquet")
+
+job.commit()
